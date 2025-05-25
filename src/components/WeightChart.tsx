@@ -40,10 +40,9 @@ interface WeightEntry {
 
 interface WeightChartProps {
   weights: WeightEntry[];
-  timeRange: "week" | "month" | "year" | "all";
 }
 
-export default function WeightChart({ weights, timeRange }: WeightChartProps) {
+export default function WeightChart({ weights }: WeightChartProps) {
   const [chartData, setChartData] = useState<ChartData<"line">>({
     labels: [],
     datasets: [],
@@ -99,32 +98,27 @@ export default function WeightChart({ weights, timeRange }: WeightChartProps) {
     });
   }, [weights, isClient]);
 
-  // Calculate a simple linear regression trend line
-  const calculateTrendLine = (data: WeightEntry[]) => {
-    if (data.length <= 1) return data.map((d) => d.weight);
+  // Calculate trend line using linear regression
+  const calculateTrendLine = (weights: WeightEntry[]) => {
+    if (weights.length < 2) return [];
 
-    const n = data.length;
-    const xs = Array.from({ length: n }, (_, i) => i);
-    const ys = data.map((d) => d.weight);
+    const n = weights.length;
+    let sumX = 0;
+    let sumY = 0;
+    let sumXY = 0;
+    let sumXX = 0;
 
-    // Calculate means
-    const xMean = xs.reduce((a, b) => a + b, 0) / n;
-    const yMean = ys.reduce((a, b) => a + b, 0) / n;
+    weights.forEach((weight, index) => {
+      sumX += index;
+      sumY += weight.weight;
+      sumXY += index * weight.weight;
+      sumXX += index * index;
+    });
 
-    // Calculate slope and intercept
-    let numerator = 0;
-    let denominator = 0;
+    const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+    const intercept = (sumY - slope * sumX) / n;
 
-    for (let i = 0; i < n; i++) {
-      numerator += (xs[i] - xMean) * (ys[i] - yMean);
-      denominator += Math.pow(xs[i] - xMean, 2);
-    }
-
-    const slope = denominator ? numerator / denominator : 0;
-    const intercept = yMean - slope * xMean;
-
-    // Generate trend line data
-    return xs.map((x) => slope * x + intercept);
+    return weights.map((_, index) => slope * index + intercept);
   };
 
   const options: ChartOptions<"line"> = {
@@ -141,8 +135,8 @@ export default function WeightChart({ weights, timeRange }: WeightChartProps) {
           font: {
             family: "'Inter', sans-serif",
           },
-          callback: function (value: any) {
-            return `${value.toFixed(1)} kg`;
+          callback: function (value: string | number) {
+            return `${Number(value).toFixed(1)} kg`;
           },
         },
       },

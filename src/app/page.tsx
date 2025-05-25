@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { addDays, subMonths, subWeeks, subYears } from "date-fns";
+import { subMonths, subWeeks, subYears } from "date-fns";
 import WeightForm from "@/components/WeightForm";
 
 import WeightChart from "@/components/WeightChart";
@@ -253,7 +253,7 @@ export default function Home() {
               <div className="flex-1 min-h-0 overflow-hidden">
                 {" "}
                 {/* This ensures the chart takes the remaining space */}
-                <WeightChart weights={filteredWeights} timeRange={timeRange} />
+                <WeightChart weights={filteredWeights} />
               </div>
             </section>
           </>

@@ -5,10 +5,10 @@ import Weight from '@/models/Weight';
 // GET a specific weight entry
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const params = await context.params;
+    const { id } = await params;
     try {
       await connectToDatabase();
     } catch (dbError) {
@@ -19,7 +19,7 @@ export async function GET(
       );
     }
     
-    const weight = await Weight.findById(params.id);
+    const weight = await Weight.findById(id);
     
     if (!weight) {
       return NextResponse.json(
@@ -41,10 +41,10 @@ export async function GET(
 // PUT/UPDATE a weight entry
 export async function PUT(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const params = await context.params;
+    const { id } = await params;
     const body = await request.json();
     const { weight, date, notes } = body;
     
@@ -66,7 +66,7 @@ export async function PUT(
     }
     
     const updatedWeight = await Weight.findByIdAndUpdate(
-      params.id,
+      id,
       {
         weight,
         date: new Date(date),
@@ -95,10 +95,10 @@ export async function PUT(
 // DELETE a weight entry
 export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const params = await context.params;
+    const { id } = await params;
     try {
       await connectToDatabase();
     } catch (dbError) {
@@ -109,7 +109,7 @@ export async function DELETE(
       );
     }
     
-    const deletedWeight = await Weight.findByIdAndDelete(params.id);
+    const deletedWeight = await Weight.findByIdAndDelete(id);
     
     if (!deletedWeight) {
       return NextResponse.json(

@@ -8,13 +8,14 @@ if (!MONGODB_URI) {
 
 // Define global mongoose cache type
 declare global {
+  // eslint-disable-next-line no-var
   var mongoose: {
     conn: mongoose.Connection | null;
     promise: Promise<mongoose.Connection> | null;
   };
 }
 
-let cached = global.mongoose || { conn: null, promise: null };
+const cached = global.mongoose || { conn: null, promise: null };
 
 if (!global.mongoose) {
   global.mongoose = cached;
@@ -30,7 +31,7 @@ async function connectToDatabase() {
       bufferCommands: false,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+    cached.promise = mongoose.connect(MONGODB_URI as string, opts).then((mongoose) => {
       return mongoose.connection;
     });
   }
