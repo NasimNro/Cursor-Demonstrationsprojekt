@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 15, 23, 42;
+  --background-end-rgb: 10, 15, 30;
+}
+
+html,
+body {
+  height: 100%;
+  height: 100svh;
+  overflow: hidden;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--background-start-rgb)),
+    rgb(var(--background-end-rgb))
+  );
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Custom scrollbar for elements that need scrolling */
+.overflow-auto::-webkit-scrollbar,
+.overflow-y-auto::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.overflow-auto::-webkit-scrollbar-track,
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: rgba(55, 65, 81, 0.1);
+  border-radius: 4px;
+}
+
+.overflow-auto::-webkit-scrollbar-thumb,
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: rgba(75, 85, 99, 0.8);
+  border-radius: 4px;
+}
+
+.overflow-auto::-webkit-scrollbar-thumb:hover,
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: rgba(107, 114, 128, 0.8);
+}
+
+/* Modern viewport height units */
+.h-screen {
+  height: 100vh; /* Fallback */
+  height: 100svh; /* Small viewport height */
+}
+
+.max-h-screen {
+  max-height: 100vh; /* Fallback */
+  max-height: 100svh; /* Small viewport height */
+}
+
+/* For fixed elements at the bottom */
+.bottom-0 {
+  bottom: 0; /* Fallback */
+  bottom: env(safe-area-inset-bottom);
+}
