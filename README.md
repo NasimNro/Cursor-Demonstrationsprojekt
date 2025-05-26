@@ -1,5 +1,9 @@
 # Weight Tracker App
 
+## 🚀 Live Demo
+
+Die Anwendung ist live verfügbar unter: **[https://cursor-demonstrationsprojekt-e3ea.vercel.app/](https://cursor-demonstrationsprojekt-e3ea.vercel.app/)**
+
 ## Projektstart mit KI-Unterstützung durch Cursor
 
 Dieses Projekt wurde initial mit maßgeblicher Unterstützung des KI-Code-Editors [Cursor](https://cursor.sh/) aufgesetzt. Die folgende Beschreibung zeigt, wie aus der ersten Projektidee ein detaillierter Plan entwickelt und die Grundstruktur der Anwendung mithilfe von Cursor erstellt wurde.
@@ -72,5 +76,3 @@ Das Dashboard soll den Gewichtsverlauf prominent anzeigen, mit einer einfachen M
 ### 3. Start der Implementierung
 
 Dieser von Cursor erstellte, detaillierte Prompt wurde anschließend dem Agenten-Modus von Cursor übergeben. Damit begann die initiale Phase der Softwareentwicklung, in der Cursor die Grundstruktur der Anwendung sowie erste Code-Bestandteile generierte.
-
-
