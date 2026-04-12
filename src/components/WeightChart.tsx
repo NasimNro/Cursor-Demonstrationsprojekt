@@ -151,6 +151,8 @@ export default function WeightChart({ weights }: WeightChartProps) {
             size: 10,
           },
           padding: 8,
+          stepSize: 1,
+          maxTicksLimit: 6,
           callback: function(value: any) {
             return Number(value).toFixed(0);
           },

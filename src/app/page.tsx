@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { subMonths, subWeeks, subYears } from "date-fns";
+import { motion } from "motion/react";
 import WeightForm from "@/components/WeightForm";
-
 import WeightChart from "@/components/WeightChart";
 import TimeRangeFilter from "@/components/TimeRangeFilter";
 import Modal from "@/components/Modal";
@@ -151,15 +151,15 @@ export default function Home() {
   }, []);
 
   // Handle form submission
-  const handleFormSubmit = (data: {
+  const handleFormSubmit = async (data: {
     weight: number;
     date: string;
     notes: string;
   }) => {
     if (editingWeight) {
-      updateWeight(data);
+      await updateWeight(data);
     } else {
-      addWeight(data);
+      await addWeight(data);
     }
   };
 
@@ -182,9 +182,14 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-[100svh] bg-gray-900 text-gray-100">
+    <main className="min-h-[100svh] text-gray-100">
       <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 max-w-2xl">
-        <header className="flex justify-between items-end mb-4 pt-1 flex-shrink-0">
+        <motion.header
+          className="flex justify-between items-end mb-4 pt-1 flex-shrink-0"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
           <div>
             <h1 className="text-[11px] sm:text-[13px] font-bold tracking-[0.2em] text-gray-400 uppercase mb-1">
               CURRENT WEIGHT
@@ -204,10 +209,10 @@ export default function Home() {
               <span className="mr-1.5 text-base leading-none font-light">+</span> Entry
             </button>
           </div>
-        </header>
+        </motion.header>
 
         {isLoading ? (
-          <div className="flex-1 flex justify-center items-center">
+          <div className="flex-1 flex justify-center items-center py-20">
             <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
           </div>
         ) : error ? (
@@ -226,7 +231,12 @@ export default function Home() {
         ) : (
           <>
             {/* Chart Section */}
-            <section className="mb-6 bg-[#121215] rounded-[24px] p-4 shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-white/5 w-full">
+            <motion.section
+              className="mb-6 bg-[#161618] rounded-[24px] p-4 shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-white/5 w-full"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
+            >
               <div className="flex justify-center items-center mb-2 px-2 relative z-20">
                 <TimeRangeFilter
                   activeRange={timeRange}
@@ -236,10 +246,15 @@ export default function Home() {
               <div className="w-full" style={{ height: '220px' }}>
                 <WeightChart weights={filteredWeights} />
               </div>
-            </section>
+            </motion.section>
             
             {/* History Preview List */}
-            <section className="pb-8">
+            <motion.section
+              className="pb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
+            >
               <div className="flex justify-between items-center mb-4 px-1">
                 <h2 className="text-lg font-semibold text-white">History</h2>
                 <Link href="/history" className="text-sm font-medium text-blue-400 hover:text-blue-300">
@@ -250,14 +265,12 @@ export default function Home() {
                 weights={weights.slice().sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())} 
                 onEdit={(w) => { setEditingWeight(w); setIsModalOpen(true); }}
                 onDelete={async (id) => {
-                  if (confirm("Delete this entry?")) {
                     await fetch(`/api/weight/${id}`, { method: 'DELETE' });
                     setWeights(prev => prev.filter(w => w._id !== id));
-                  }
                 }}
                 compact={true}
               />
-            </section>
+            </motion.section>
           </>
         )}
       </div>
@@ -272,6 +285,12 @@ export default function Home() {
           onSubmit={handleFormSubmit}
           initialData={editingWeight || undefined}
           onCancel={handleCloseModal}
+          onDelete={editingWeight ? async () => {
+              await fetch(`/api/weight/${editingWeight._id}`, { method: 'DELETE' });
+              setWeights(prev => prev.filter(w => w._id !== editingWeight._id));
+              setEditingWeight(null);
+              setIsModalOpen(false);
+          } : undefined}
         />
       </Modal>
     </main>

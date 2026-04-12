@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { motion } from "motion/react";
 import WeightList from "@/components/WeightList";
 import Modal from "@/components/Modal";
 import WeightForm from "@/components/WeightForm";
@@ -80,7 +81,7 @@ export default function HistoryPage() {
 
   // Delete a weight entry
   const deleteWeight = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this weight entry?")) return;
+
 
     try {
       const response = await fetch(`/api/weight/${id}`, {
@@ -127,22 +128,22 @@ export default function HistoryPage() {
   };
 
   return (
-    <main className="h-[100svh] max-h-[100svh] bg-gray-900 text-gray-100 flex flex-col overflow-hidden">
-      <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-4 flex flex-col h-full max-h-full">
-        <header className="mb-2 sm:mb-4 flex justify-between items-center flex-shrink-0">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold">Weight History</h1>
-            <p className="text-xs sm:text-sm text-gray-400">
-              View and manage your weight entries
-            </p>
-          </div>
+    <main className="min-h-[100svh] text-gray-100">
+      <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 max-w-2xl">
+        <motion.header
+          className="mb-4 flex justify-between items-center flex-shrink-0"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
+          <h1 className="text-xl sm:text-2xl font-bold text-white">Weight History</h1>
           <Link
             href="/"
-            className="px-2 py-1 sm:px-4 sm:py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm rounded-lg transition-colors flex items-center"
+            className="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-blue-400 text-white text-sm font-semibold rounded-full shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-transform hover:scale-105 flex items-center"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2"
+              className="h-4 w-4 mr-1.5"
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -152,53 +153,57 @@ export default function HistoryPage() {
                 clipRule="evenodd"
               />
             </svg>
-            <span className="hidden sm:inline">Back to Dashboard</span>
+            Back
           </Link>
-        </header>
+        </motion.header>
 
-        <div className="flex-1 overflow-auto">
-          {isLoading ? (
-            <div className="flex justify-center items-center h-full">
-              <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
-          ) : error ? (
-            <div className="bg-red-900/30 border border-red-500 p-4 rounded-lg">
-              <h2 className="text-lg font-semibold text-red-400 mb-2">
-                Connection Error
-              </h2>
-              <p className="text-gray-300">{error}</p>
-              <button
-                onClick={fetchWeights}
-                className="mt-4 px-4 py-2 bg-red-700 hover:bg-red-600 text-white rounded-md"
-              >
-                Try Again
-              </button>
-            </div>
-          ) : (
-            <>
-              {weights.length === 0 ? (
-                <div className="bg-gray-800 p-4 sm:p-6 rounded-lg shadow-md text-center">
-                  <p className="text-gray-300">
-                    No weight entries yet. Add your first entry on the
-                    dashboard!
-                  </p>
-                  <Link
-                    href="/"
-                    className="mt-4 inline-block px-4 py-2 sm:px-6 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-                  >
-                    Go to Dashboard
-                  </Link>
-                </div>
-              ) : (
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        ) : error ? (
+          <div className="bg-red-900/30 border border-red-500 p-4 rounded-lg">
+            <h2 className="text-lg font-semibold text-red-400 mb-2">
+              Connection Error
+            </h2>
+            <p className="text-gray-300">{error}</p>
+            <button
+              onClick={fetchWeights}
+              className="mt-4 px-4 py-2 bg-red-700 hover:bg-red-600 text-white rounded-md"
+            >
+              Try Again
+            </button>
+          </div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
+          >
+            {weights.length === 0 ? (
+              <div className="bg-[#161618] p-4 sm:p-6 rounded-2xl shadow-md text-center border border-white/5">
+                <p className="text-gray-300">
+                  No weight entries yet. Add your first entry on the
+                  dashboard!
+                </p>
+                <Link
+                  href="/"
+                  className="mt-4 inline-block px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-400 text-white rounded-full transition-transform hover:scale-105 shadow-[0_0_20px_rgba(59,130,246,0.3)]"
+                >
+                  Go to Dashboard
+                </Link>
+              </div>
+            ) : (
+              <div className="pb-8">
                 <WeightList
                   weights={weights}
                   onEdit={handleEdit}
                   onDelete={deleteWeight}
                 />
-              )}
-            </>
-          )}
-        </div>
+              </div>
+            )}
+          </motion.div>
+        )}
       </div>
 
       {/* Modal for editing weight entries */}
@@ -211,6 +216,12 @@ export default function HistoryPage() {
           onSubmit={handleFormSubmit}
           initialData={editingWeight || undefined}
           onCancel={handleCloseModal}
+          onDelete={editingWeight ? async () => {
+              await fetch(`/api/weight/${editingWeight._id}`, { method: 'DELETE' });
+              setWeights(prev => prev.filter(w => w._id !== editingWeight._id));
+              setEditingWeight(null);
+              setIsModalOpen(false);
+          } : undefined}
         />
       </Modal>
     </main>

@@ -4,8 +4,6 @@
 
 :root {
   --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 5, 5, 5;
-  --background-end-rgb: 14, 14, 16;
 }
 
 html,
@@ -16,12 +14,20 @@ body {
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-    to bottom,
-    rgb(var(--background-start-rgb)),
-    rgb(var(--background-end-rgb))
-  );
+  background: #0e0e11;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Fix iOS date input overflow */
+input[type="date"],
+input[type="number"],
+textarea {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
 }
 
 /* Custom scrollbar for elements that need scrolling */

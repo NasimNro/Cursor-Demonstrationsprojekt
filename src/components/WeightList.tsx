@@ -1,6 +1,7 @@
 "use client";
 import { format } from "date-fns";
 import { useState, useEffect } from "react";
+import { motion } from "motion/react";
 
 interface WeightEntry {
   _id: string;
@@ -60,14 +61,21 @@ export default function WeightList({
   // Show a simple loading state if not on client
   if (!isClient) {
     return (
-      <div className="bg-gray-800 rounded-lg shadow-md p-4">Loading...</div>
+      <div className="bg-[#161618] rounded-2xl shadow-md p-4 border border-white/5">Loading...</div>
     );
   }
 
   return (
     <div className="flex flex-col gap-2">
-      {formattedWeights.map((entry) => (
-        <div key={entry._id} className="bg-[#1c1c1e] rounded-xl flex items-center justify-between p-4 cursor-pointer hover:bg-[#2c2c2e] transition-colors" onClick={() => onEdit(entry)}>
+      {formattedWeights.map((entry, index) => (
+        <motion.div
+          key={entry._id}
+          className="bg-[#161618] rounded-xl flex items-center justify-between p-4 cursor-pointer hover:bg-[#1e1e21] transition-colors border border-white/[0.03]"
+          onClick={() => onEdit(entry)}
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: index * 0.04, ease: "easeOut" }}
+        >
           <div className="flex items-center">
             <div className="w-1 h-8 rounded-full bg-blue-300 mr-4 opacity-80" />
             <div className="flex flex-col">
@@ -94,7 +102,7 @@ export default function WeightList({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </div>
-        </div>
+        </motion.div>
       ))}
     </div>
   );

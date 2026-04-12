@@ -4,6 +4,7 @@ import { format } from "date-fns";
 
 interface WeightFormProps {
   onSubmit: (data: { weight: number; date: string; notes: string }) => void;
+  onDelete?: () => void;
   initialData?: {
     _id?: string;
     weight: number;
@@ -15,6 +16,7 @@ interface WeightFormProps {
 
 export default function WeightForm({
   onSubmit,
+  onDelete,
   initialData,
   onCancel,
 }: WeightFormProps) {
@@ -71,16 +73,13 @@ export default function WeightForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-5 bg-[#121215] p-6 rounded-2xl shadow-2xl border border-white/5"
+      className="space-y-3 bg-[#161618] p-4 rounded-2xl shadow-2xl border border-white/5 overflow-hidden"
     >
-      <h2 className="text-xl font-bold text-white tracking-wide">
-        {initialData?._id ? "EDIT ENTRY" : "NEW ENTRY"}
-      </h2>
 
       <div>
         <label
           htmlFor="weight"
-          className="block text-sm font-semibold text-gray-400 uppercase tracking-widest mb-1.5"
+          className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1"
         >
           Weight (kg)
         </label>
@@ -90,8 +89,7 @@ export default function WeightForm({
           step="0.1"
           value={weight}
           onChange={(e) => setWeight(e.target.value)}
-          className="block w-full px-4 py-3 bg-[#1e1e20] border-none rounded-xl text-white font-medium text-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
-          autoFocus
+          className="block w-full px-3 py-2.5 bg-[#1e1e21] border-none rounded-xl text-white font-medium text-base focus:outline-none focus:ring-2 focus:ring-blue-500/50"
         />
         {errors.weight && (
           <p className="mt-1 text-sm text-red-400">{errors.weight}</p>
@@ -101,7 +99,7 @@ export default function WeightForm({
       <div>
         <label
           htmlFor="date"
-          className="block text-sm font-semibold text-gray-400 uppercase tracking-widest mb-1.5"
+          className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1"
         >
           Date
         </label>
@@ -110,7 +108,7 @@ export default function WeightForm({
           id="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          className="block w-full px-4 py-3 bg-[#1e1e20] border-none rounded-xl text-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+          className="block w-full px-3 py-2.5 bg-[#1e1e21] border-none rounded-xl text-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/50 box-border max-w-full"
         />
         {errors.date && (
           <p className="mt-1 text-sm text-red-400">{errors.date}</p>
@@ -120,7 +118,7 @@ export default function WeightForm({
       <div>
         <label
           htmlFor="notes"
-          className="block text-sm font-semibold text-gray-400 uppercase tracking-widest mb-1.5"
+          className="block text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1"
         >
           Notes <span className="text-gray-600">(optional)</span>
         </label>
@@ -128,27 +126,40 @@ export default function WeightForm({
           id="notes"
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          rows={3}
-          className="block w-full px-4 py-3 bg-[#1e1e20] border-none rounded-xl text-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none"
+          rows={2}
+          className="block w-full px-3 py-2.5 bg-[#1e1e21] border-none rounded-xl text-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none"
         />
       </div>
 
-      <div className="flex justify-end space-x-3 pt-2">
-        {onCancel && (
+      <div className="flex items-center justify-between pt-1">
+        <div>
+          {initialData?._id && onDelete && (
+            <button
+              type="button"
+              onClick={onDelete}
+              className="px-4 py-2 text-red-400 text-sm font-medium rounded-full hover:bg-red-500/10 transition-colors"
+            >
+              Delete
+            </button>
+          )}
+        </div>
+        <div className="flex space-x-3">
+          {onCancel && (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="px-5 py-2.5 bg-transparent text-gray-400 font-medium rounded-full hover:bg-white/5 hover:text-white transition-colors"
+            >
+              Cancel
+            </button>
+          )}
           <button
-            type="button"
-            onClick={onCancel}
-            className="px-5 py-2.5 bg-transparent text-gray-400 font-medium rounded-full hover:bg-white/5 hover:text-white transition-colors"
+            type="submit"
+            className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-blue-400 text-white font-semibold rounded-full shadow-[0_0_15px_rgba(59,130,246,0.3)] transition-transform hover:scale-105"
           >
-            Cancel
+            {initialData?._id ? "Update" : "Save Entry"}
           </button>
-        )}
-        <button
-          type="submit"
-          className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-blue-400 text-white font-semibold rounded-full shadow-[0_0_15px_rgba(59,130,246,0.3)] transition-transform hover:scale-105"
-        >
-          {initialData?._id ? "Update" : "Save Entry"}
-        </button>
+        </div>
       </div>
     </form>
   );
