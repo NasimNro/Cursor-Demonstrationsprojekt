@@ -64,13 +64,10 @@ export default function WeightChart({ weights }: WeightChartProps) {
 
     // Format dates for display - Only run this on the client side
     const labels = sortedWeights.map((entry) =>
-      format(new Date(entry.date), "MM/dd/yyyy")
+      format(new Date(entry.date), "dd.MM.")
     );
 
     const weightData = sortedWeights.map((entry) => entry.weight);
-
-    // Calculate trend line data
-    const trendData = calculateTrendLine(sortedWeights);
 
     setChartData({
       labels,
@@ -78,21 +75,22 @@ export default function WeightChart({ weights }: WeightChartProps) {
         {
           label: "Weight (kg)",
           data: weightData,
-          borderColor: "rgba(59, 130, 246, 1)",
-          backgroundColor: "rgba(59, 130, 246, 0.2)",
+          borderColor: "rgba(164, 184, 219, 1)",
+          borderWidth: 3,
+          backgroundColor: (context: any) => {
+            const ctx = context.chart.ctx;
+            const gradient = ctx.createLinearGradient(0, 0, 0, context.chart.height);
+            gradient.addColorStop(0, "rgba(164, 184, 219, 0.4)");
+            gradient.addColorStop(1, "rgba(164, 184, 219, 0.0)");
+            return gradient;
+          },
           fill: true,
-          pointBackgroundColor: "rgba(59, 130, 246, 1)",
+          pointBackgroundColor: "rgba(164, 184, 219, 1)",
           pointBorderColor: "#fff",
-          pointBorderWidth: 1,
-        },
-        {
-          label: "Trend",
-          data: trendData,
-          borderColor: "rgba(249, 115, 22, 0.7)",
-          borderWidth: 2,
-          borderDash: [5, 5],
-          fill: false,
-          pointRadius: 0,
+          pointBorderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          tension: 0.4, // Smooth curve
         },
       ],
     });
@@ -124,47 +122,63 @@ export default function WeightChart({ weights }: WeightChartProps) {
   const options: ChartOptions<"line"> = {
     responsive: true,
     maintainAspectRatio: false,
+    layout: {
+      padding: {
+        top: 10,
+        right: 4,
+        bottom: 4,
+        left: 4
+      }
+    },
     scales: {
       y: {
+        display: true,
         beginAtZero: false,
+        suggestedMin: Math.min(...weights.map(w => w.weight)) - 1,
+        suggestedMax: Math.max(...weights.map(w => w.weight)) + 1,
+        position: 'right' as const,
         grid: {
-          color: "rgba(148, 163, 184, 0.1)",
+          color: "rgba(255, 255, 255, 0.06)",
+          drawTicks: false,
+        },
+        border: {
+          display: false,
         },
         ticks: {
-          color: "rgba(255, 255, 255, 0.7)",
+          color: "rgba(255, 255, 255, 0.4)",
           font: {
             family: "'Inter', sans-serif",
+            size: 10,
           },
-          callback: function (value: string | number) {
-            return `${Number(value).toFixed(1)} kg`;
+          padding: 8,
+          callback: function(value: any) {
+            return Number(value).toFixed(0);
           },
         },
       },
       x: {
         grid: {
-          color: "rgba(148, 163, 184, 0.1)",
+          display: false,
+        },
+        border: {
+          display: false
         },
         ticks: {
-          color: "rgba(255, 255, 255, 0.7)",
+          color: "rgba(255, 255, 255, 0.4)",
           font: {
             family: "'Inter', sans-serif",
+            size: 10,
           },
-          maxRotation: 45,
-          minRotation: 45,
+          maxRotation: 0,
           autoSkip: true,
-          maxTicksLimit: 6,
+          maxTicksLimit: 5,
+          padding: 4,
         },
       },
     },
     plugins: {
       legend: {
-        position: "top" as const,
-        labels: {
-          color: "rgba(255, 255, 255, 0.7)",
-          font: {
-            family: "'Inter', sans-serif",
-          },
-        },
+        display: false,
       },
       title: {
         display: false,
@@ -232,10 +246,8 @@ export default function WeightChart({ weights }: WeightChartProps) {
   }
 
   return (
-    <div className="h-full bg-gray-800 rounded-lg p-2 sm:p-4 shadow-md overflow-hidden">
-      <div className="w-full h-full overflow-hidden">
-        <Line options={options} data={chartData} />
-      </div>
+    <div className="w-full h-full">
+      <Line options={options} data={chartData} />
     </div>
   );
 }

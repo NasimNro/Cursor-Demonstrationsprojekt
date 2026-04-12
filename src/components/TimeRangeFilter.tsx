@@ -9,46 +9,46 @@ export default function TimeRangeFilter({
   onRangeChange,
 }: TimeRangeFilterProps) {
   return (
-    <div className="flex bg-gray-800 rounded-md p-0.5 text-xs sm:text-sm shadow-md">
+    <div className="relative z-20 flex bg-transparent rounded-full p-1 text-[11px] sm:text-[12px] font-semibold text-gray-400 gap-1">
       <button
-        className={`px-2 py-1 rounded-md transition-colors ${
+        className={`px-3 py-1.5 rounded-full transition-colors ${
           activeRange === "week"
-            ? "bg-blue-600 text-white"
-            : "hover:bg-gray-700 text-gray-300"
+            ? "bg-[#1f1f22] text-white"
+            : "hover:text-gray-200"
         }`}
         onClick={() => onRangeChange("week")}
       >
-        Week
+        WOCHE
       </button>
       <button
-        className={`px-2 py-1 rounded-md transition-colors ${
+        className={`px-3 py-1.5 rounded-full transition-colors ${
           activeRange === "month"
-            ? "bg-blue-600 text-white"
-            : "hover:bg-gray-700 text-gray-300"
+            ? "bg-[#1f1f22] text-white"
+            : "hover:text-gray-200"
         }`}
         onClick={() => onRangeChange("month")}
       >
-        Month
+        MONAT
       </button>
       <button
-        className={`px-2 py-1 rounded-md transition-colors ${
+        className={`px-3 py-1.5 rounded-full transition-colors ${
           activeRange === "year"
-            ? "bg-blue-600 text-white"
-            : "hover:bg-gray-700 text-gray-300"
+            ? "bg-[#1f1f22] text-white"
+            : "hover:text-gray-200"
         }`}
         onClick={() => onRangeChange("year")}
       >
-        Year
+        JAHR
       </button>
       <button
-        className={`px-2 py-1 rounded-md transition-colors ${
+        className={`px-3 py-1.5 rounded-full transition-colors ${
           activeRange === "all"
-            ? "bg-blue-600 text-white"
-            : "hover:bg-gray-700 text-gray-300"
+            ? "bg-[#1f1f22] text-white"
+            : "hover:text-gray-200"
         }`}
         onClick={() => onRangeChange("all")}
       >
-        All
+        ALLE
       </button>
     </div>
   );

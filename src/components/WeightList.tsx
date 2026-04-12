@@ -13,16 +13,18 @@ interface WeightListProps {
   weights: WeightEntry[];
   onEdit: (weight: WeightEntry) => void;
   onDelete: (id: string) => void;
+  compact?: boolean;
 }
 
 export default function WeightList({
   weights,
   onEdit,
   onDelete,
+  compact = false,
 }: WeightListProps) {
   const [isClient, setIsClient] = useState(false);
   const [formattedWeights, setFormattedWeights] = useState<
-    Array<WeightEntry & { formattedDate: string }>
+    Array<WeightEntry & { formattedDate: string; diffFromPrev?: number }>
   >([]);
 
   // Set client-side rendering flag
@@ -39,11 +41,18 @@ export default function WeightList({
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
     );
 
-    // Format dates
-    const formatted = sortedWeights.map((weight) => ({
-      ...weight,
-      formattedDate: format(new Date(weight.date), "MMM d, yyyy"),
-    }));
+    // Format dates and calculate diffs
+    const formatted = sortedWeights.map((weight, index) => {
+      // Find the next older date to calculate diff (since array is newest first, next item is older)
+      const prevWeight = sortedWeights[index + 1];
+      const diffFromPrev = prevWeight ? weight.weight - prevWeight.weight : undefined;
+
+      return {
+        ...weight,
+        formattedDate: format(new Date(weight.date), "MMM d, yyyy"),
+        diffFromPrev
+      };
+    });
 
     setFormattedWeights(formatted);
   }, [weights, isClient]);
@@ -56,87 +65,37 @@ export default function WeightList({
   }
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-md overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-700">
-          <thead className="bg-gray-700">
-            <tr>
-              <th
-                scope="col"
-                className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
-              >
-                Date
-              </th>
-              <th
-                scope="col"
-                className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
-              >
-                Weight
-              </th>
-              <th
-                scope="col"
-                className="px-4 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider hidden sm:table-cell"
-              >
-                Notes
-              </th>
-              <th scope="col" className="relative px-4 py-3">
-                <span className="sr-only">Actions</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-gray-800 divide-y divide-gray-700">
-            {formattedWeights.map((entry) => (
-              <tr key={entry._id} className="hover:bg-gray-750">
-                <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-200">
-                  {entry.formattedDate}
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap">
-                  <span className="text-sm font-medium text-gray-100">
-                    {entry.weight} kg
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-300 hidden sm:table-cell">
-                  {entry.notes || "-"}
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end gap-2">
-                    <button
-                      onClick={() => onEdit(entry)}
-                      className="text-blue-400 hover:text-blue-300 transition-colors"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                      </svg>
-                    </button>
-                    <button
-                      onClick={() => onDelete(entry._id)}
-                      className="text-red-400 hover:text-red-300 transition-colors"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+    <div className="flex flex-col gap-2">
+      {formattedWeights.map((entry) => (
+        <div key={entry._id} className="bg-[#1c1c1e] rounded-xl flex items-center justify-between p-4 cursor-pointer hover:bg-[#2c2c2e] transition-colors" onClick={() => onEdit(entry)}>
+          <div className="flex items-center">
+            <div className="w-1 h-8 rounded-full bg-blue-300 mr-4 opacity-80" />
+            <div className="flex flex-col">
+              <span className="text-white font-semibold text-lg leading-tight mb-0.5">
+                {entry.weight.toFixed(1).replace('.', ',')} kg
+              </span>
+              <span className="text-gray-400 text-xs">
+                {entry.formattedDate}
+              </span>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            {entry.diffFromPrev !== undefined && (
+              <span className={`text-sm font-semibold ${
+                entry.diffFromPrev < 0 ? "text-red-400" :
+                entry.diffFromPrev > 0 ? "text-green-400" :
+                "text-gray-500"
+              }`}>
+                {entry.diffFromPrev > 0 ? "+" : ""}{entry.diffFromPrev.toFixed(1).replace('.', ',')} kg
+              </span>
+            )}
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

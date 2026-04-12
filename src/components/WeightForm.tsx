@@ -71,16 +71,16 @@ export default function WeightForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 bg-gray-800 p-6 rounded-lg shadow-md"
+      className="space-y-5 bg-[#121215] p-6 rounded-2xl shadow-2xl border border-white/5"
     >
-      <h2 className="text-xl font-semibold text-gray-100">
-        {initialData?._id ? "Edit Weight Entry" : "Add New Weight Entry"}
+      <h2 className="text-xl font-bold text-white tracking-wide">
+        {initialData?._id ? "EDIT ENTRY" : "NEW ENTRY"}
       </h2>
 
       <div>
         <label
           htmlFor="weight"
-          className="block text-sm font-medium text-gray-300"
+          className="block text-sm font-semibold text-gray-400 uppercase tracking-widest mb-1.5"
         >
           Weight (kg)
         </label>
@@ -90,18 +90,18 @@ export default function WeightForm({
           step="0.1"
           value={weight}
           onChange={(e) => setWeight(e.target.value)}
-          className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          className="block w-full px-4 py-3 bg-[#1e1e20] border-none rounded-xl text-white font-medium text-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50"
           autoFocus
         />
         {errors.weight && (
-          <p className="mt-1 text-sm text-red-500">{errors.weight}</p>
+          <p className="mt-1 text-sm text-red-400">{errors.weight}</p>
         )}
       </div>
 
       <div>
         <label
           htmlFor="date"
-          className="block text-sm font-medium text-gray-300"
+          className="block text-sm font-semibold text-gray-400 uppercase tracking-widest mb-1.5"
         >
           Date
         </label>
@@ -110,44 +110,44 @@ export default function WeightForm({
           id="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          className="block w-full px-4 py-3 bg-[#1e1e20] border-none rounded-xl text-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/50"
         />
         {errors.date && (
-          <p className="mt-1 text-sm text-red-500">{errors.date}</p>
+          <p className="mt-1 text-sm text-red-400">{errors.date}</p>
         )}
       </div>
 
       <div>
         <label
           htmlFor="notes"
-          className="block text-sm font-medium text-gray-300"
+          className="block text-sm font-semibold text-gray-400 uppercase tracking-widest mb-1.5"
         >
-          Notes (optional)
+          Notes <span className="text-gray-600">(optional)</span>
         </label>
         <textarea
           id="notes"
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           rows={3}
-          className="mt-1 block w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+          className="block w-full px-4 py-3 bg-[#1e1e20] border-none rounded-xl text-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/50 resize-none"
         />
       </div>
 
-      <div className="flex justify-end space-x-3">
+      <div className="flex justify-end space-x-3 pt-2">
         {onCancel && (
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 bg-gray-700 text-gray-200 rounded-md hover:bg-gray-600"
+            className="px-5 py-2.5 bg-transparent text-gray-400 font-medium rounded-full hover:bg-white/5 hover:text-white transition-colors"
           >
             Cancel
           </button>
         )}
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          className="px-6 py-2.5 bg-gradient-to-r from-blue-500 to-blue-400 text-white font-semibold rounded-full shadow-[0_0_15px_rgba(59,130,246,0.3)] transition-transform hover:scale-105"
         >
-          {initialData?._id ? "Update" : "Add"}
+          {initialData?._id ? "Update" : "Save Entry"}
         </button>
       </div>
     </form>

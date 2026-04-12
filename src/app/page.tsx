@@ -6,9 +6,9 @@ import { subMonths, subWeeks, subYears } from "date-fns";
 import WeightForm from "@/components/WeightForm";
 
 import WeightChart from "@/components/WeightChart";
-import WeightStats from "@/components/WeightStats";
 import TimeRangeFilter from "@/components/TimeRangeFilter";
 import Modal from "@/components/Modal";
+import WeightList from "@/components/WeightList";
 
 interface WeightEntry {
   _id: string;
@@ -175,41 +175,34 @@ export default function Home() {
     setIsModalOpen(true);
   };
 
+  const getLatestWeight = () => {
+    if (weights.length === 0) return "0.0";
+    const sorted = [...weights].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    return sorted[sorted.length - 1].weight.toFixed(1).replace('.', ',');
+  };
+
   return (
-    <main className="h-[100svh] max-h-[100svh] bg-gray-900 text-gray-100 flex flex-col overflow-hidden">
-      <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-4 flex flex-col h-full max-h-full overflow-hidden">
-        <header className="flex justify-between items-center mb-1 sm:mb-2 flex-shrink-0">
+    <main className="min-h-[100svh] bg-gray-900 text-gray-100">
+      <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 max-w-2xl">
+        <header className="flex justify-between items-end mb-4 pt-1 flex-shrink-0">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold">Weight Tracker</h1>
-            <p className="text-xs sm:text-sm text-gray-400">
-              Track and visualize your weight journey
-            </p>
+            <h1 className="text-[11px] sm:text-[13px] font-bold tracking-[0.2em] text-gray-400 uppercase mb-1">
+              CURRENT WEIGHT
+            </h1>
+            <div className="flex items-baseline">
+              <span className="text-4xl sm:text-5xl font-bold text-white tracking-tighter">
+                {getLatestWeight()}
+              </span>
+              <span className="text-2xl sm:text-3xl font-semibold text-gray-400 ml-1.5">kg</span>
+            </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex pb-1">
             <button
               onClick={handleAddNew}
-              className="px-2 py-1 sm:px-4 sm:py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow-lg transition-colors"
+              className="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-blue-400 text-white text-sm font-semibold rounded-full shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-transform hover:scale-105 flex items-center"
             >
-              Add Entry
+              <span className="mr-1.5 text-base leading-none font-light">+</span> Entry
             </button>
-            <Link
-              href="/history"
-              className="px-2 py-1 sm:px-4 sm:py-2 bg-gray-700 hover:bg-gray-600 text-white text-sm rounded-lg transition-colors flex items-center"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 mr-1"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm2 10a1 1 0 10-2 0v3a1 1 0 102 0v-3zm4-1a1 1 0 011 1v3a1 1 0 11-2 0v-3a1 1 0 011-1z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <span className="hidden sm:inline">History</span>
-            </Link>
           </div>
         </header>
 
@@ -232,29 +225,38 @@ export default function Home() {
           </div>
         ) : (
           <>
-            {/* Stats Section - Only show if we have data, smaller on mobile */}
-            {weights.length > 0 && (
-              <section className="mb-2 flex-shrink-0">
-                <WeightStats weights={weights} />
-              </section>
-            )}
-
-            {/* Chart Section - Takes more space now */}
-            <section className="flex-1 flex flex-col min-h-0 overflow-hidden">
-              <div className="flex justify-between items-center mb-1 sm:mb-2 flex-shrink-0">
-                <h2 className="text-base sm:text-xl font-semibold">
-                  Weight Progress
-                </h2>
+            {/* Chart Section */}
+            <section className="mb-6 bg-[#121215] rounded-[24px] p-4 shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-white/5 w-full">
+              <div className="flex justify-center items-center mb-2 px-2 relative z-20">
                 <TimeRangeFilter
                   activeRange={timeRange}
                   onRangeChange={setTimeRange}
                 />
               </div>
-              <div className="flex-1 min-h-0 overflow-hidden">
-                {" "}
-                {/* This ensures the chart takes the remaining space */}
+              <div className="w-full" style={{ height: '220px' }}>
                 <WeightChart weights={filteredWeights} />
               </div>
+            </section>
+            
+            {/* History Preview List */}
+            <section className="pb-8">
+              <div className="flex justify-between items-center mb-4 px-1">
+                <h2 className="text-lg font-semibold text-white">History</h2>
+                <Link href="/history" className="text-sm font-medium text-blue-400 hover:text-blue-300">
+                  See more
+                </Link>
+              </div>
+              <WeightList 
+                weights={weights.slice().sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())} 
+                onEdit={(w) => { setEditingWeight(w); setIsModalOpen(true); }}
+                onDelete={async (id) => {
+                  if (confirm("Delete this entry?")) {
+                    await fetch(`/api/weight/${id}`, { method: 'DELETE' });
+                    setWeights(prev => prev.filter(w => w._id !== id));
+                  }
+                }}
+                compact={true}
+              />
             </section>
           </>
         )}

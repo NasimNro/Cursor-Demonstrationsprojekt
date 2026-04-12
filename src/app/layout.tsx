@@ -7,13 +7,14 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Weight Tracker - Monitor Your Progress",
   description: "A simple and effective way to track your weight journey",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-    viewportFit: "cover",
-  },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
