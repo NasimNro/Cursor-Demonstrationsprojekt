@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion } from "motion/react";
+
 import WeightList from "@/components/WeightList";
 import Modal from "@/components/Modal";
 import WeightForm from "@/components/WeightForm";
@@ -130,11 +130,8 @@ export default function HistoryPage() {
   return (
     <main className="min-h-[100svh] text-gray-100">
       <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 max-w-2xl">
-        <motion.header
-          className="mb-4 flex justify-between items-center flex-shrink-0"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+        <header
+          className="mb-4 flex justify-between items-center flex-shrink-0 animate-fade-in"
         >
           <h1 className="text-xl sm:text-2xl font-bold text-white">Weight History</h1>
           <Link
@@ -155,7 +152,7 @@ export default function HistoryPage() {
             </svg>
             Back
           </Link>
-        </motion.header>
+        </header>
 
         {isLoading ? (
           <div className="animate-pulse flex flex-col gap-2 pb-8">
@@ -186,11 +183,7 @@ export default function HistoryPage() {
             </button>
           </div>
         ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
-          >
+          <div className="animate-fade-in animation-delay-150">
             {weights.length === 0 ? (
               <div className="bg-[#161618] p-4 sm:p-6 rounded-2xl shadow-md text-center border border-white/5">
                 <p className="text-gray-300">
@@ -213,7 +206,7 @@ export default function HistoryPage() {
                 />
               </div>
             )}
-          </motion.div>
+          </div>
         )}
       </div>
 

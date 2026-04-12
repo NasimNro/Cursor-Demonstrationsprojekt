@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { subMonths, subWeeks, subYears } from "date-fns";
-import { motion } from "motion/react";
+
 import WeightForm from "@/components/WeightForm";
 import WeightChart from "@/components/WeightChart";
 import TimeRangeFilter from "@/components/TimeRangeFilter";
@@ -184,11 +184,8 @@ export default function Home() {
   return (
     <main className="min-h-[100svh] text-gray-100">
       <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 max-w-2xl">
-        <motion.header
-          className="flex justify-between items-end mb-4 pt-1 flex-shrink-0"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+        <header
+          className="flex justify-between items-end mb-4 pt-1 flex-shrink-0 animate-fade-in"
         >
           <div>
             <h1 className="text-[11px] sm:text-[13px] font-bold tracking-[0.2em] text-gray-400 uppercase mb-1">
@@ -209,7 +206,7 @@ export default function Home() {
               <span className="mr-1.5 text-base leading-none font-light">+</span> Entry
             </button>
           </div>
-        </motion.header>
+        </header>
 
         {isLoading ? (
           <div className="animate-pulse">
@@ -259,11 +256,8 @@ export default function Home() {
         ) : (
           <>
             {/* Chart Section */}
-            <motion.section
-              className="mb-6 bg-[#161618] rounded-[24px] p-4 shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-white/5 w-full"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
+            <section
+              className="mb-6 bg-[#161618] rounded-[24px] p-4 shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-white/5 w-full animate-fade-in"
             >
               <div className="flex justify-center items-center mb-2 px-2 relative z-20">
                 <TimeRangeFilter
@@ -274,14 +268,11 @@ export default function Home() {
               <div className="w-full" style={{ height: '220px' }}>
                 <WeightChart weights={filteredWeights} />
               </div>
-            </motion.section>
+            </section>
             
             {/* History Preview List */}
-            <motion.section
-              className="pb-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
+            <section
+              className="pb-8 animate-fade-in animation-delay-150"
             >
               <div className="flex justify-between items-center mb-4 px-1">
                 <h2 className="text-lg font-semibold text-white">History</h2>
@@ -298,7 +289,7 @@ export default function Home() {
                 }}
                 compact={true}
               />
-            </motion.section>
+            </section>
           </>
         )}
       </div>
