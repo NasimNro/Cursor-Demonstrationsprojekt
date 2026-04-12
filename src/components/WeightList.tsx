@@ -1,7 +1,6 @@
 "use client";
 import { format } from "date-fns";
 import { useState, useEffect } from "react";
-import { motion } from "motion/react";
 
 interface WeightEntry {
   _id: string;
@@ -68,13 +67,11 @@ export default function WeightList({
   return (
     <div className="flex flex-col gap-2">
       {formattedWeights.map((entry, index) => (
-        <motion.div
+        <div
           key={entry._id}
-          className="bg-[#161618] rounded-xl flex items-center justify-between p-4 cursor-pointer hover:bg-[#1e1e21] transition-colors border border-white/[0.03]"
+          className="bg-[#161618] rounded-xl flex items-center justify-between p-4 cursor-pointer hover:bg-[#1e1e21] active:bg-[#252528] transition-colors border border-white/[0.03] animate-fade-in-item"
+          style={{ animationDelay: `${index * 40}ms` }}
           onClick={() => onEdit(entry)}
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, delay: index * 0.04, ease: "easeOut" }}
         >
           <div className="flex items-center">
             <div className="w-1 h-8 rounded-full bg-blue-300 mr-4 opacity-80" />
@@ -102,7 +99,7 @@ export default function WeightList({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </div>
-        </motion.div>
+        </div>
       ))}
     </div>
   );
