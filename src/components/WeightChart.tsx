@@ -134,8 +134,8 @@ export default function WeightChart({ weights }: WeightChartProps) {
       y: {
         display: true,
         beginAtZero: false,
-        suggestedMin: Math.min(...weights.map(w => w.weight)) - 1,
-        suggestedMax: Math.max(...weights.map(w => w.weight)) + 1,
+        min: Math.floor(Math.min(...weights.map(w => w.weight)) - 0.5),
+        max: Math.ceil(Math.max(...weights.map(w => w.weight)) + 0.5),
         position: 'right' as const,
         grid: {
           color: "rgba(255, 255, 255, 0.06)",

@@ -212,8 +212,36 @@ export default function Home() {
         </motion.header>
 
         {isLoading ? (
-          <div className="flex-1 flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+          <div className="animate-pulse">
+            {/* Chart skeleton */}
+            <div className="mb-6 bg-[#161618] rounded-[24px] p-4 border border-white/5">
+              <div className="flex justify-center gap-2 mb-3">
+                <div className="h-7 w-16 bg-white/5 rounded-full" />
+                <div className="h-7 w-16 bg-white/10 rounded-full" />
+                <div className="h-7 w-12 bg-white/5 rounded-full" />
+                <div className="h-7 w-12 bg-white/5 rounded-full" />
+              </div>
+              <div className="h-[180px] bg-white/[0.03] rounded-xl" />
+            </div>
+            {/* History skeleton */}
+            <div className="mb-4 px-1 flex justify-between items-center">
+              <div className="h-5 w-16 bg-white/10 rounded" />
+              <div className="h-4 w-16 bg-white/5 rounded" />
+            </div>
+            <div className="flex flex-col gap-2">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="bg-[#161618] rounded-xl p-4 flex items-center justify-between border border-white/[0.03]">
+                  <div className="flex items-center">
+                    <div className="w-1 h-8 rounded-full bg-white/10 mr-4" />
+                    <div className="flex flex-col gap-1.5">
+                      <div className="h-5 w-20 bg-white/10 rounded" />
+                      <div className="h-3 w-24 bg-white/5 rounded" />
+                    </div>
+                  </div>
+                  <div className="h-4 w-14 bg-white/5 rounded" />
+                </div>
+              ))}
+            </div>
           </div>
         ) : error ? (
           <div className="bg-red-900/30 border border-red-500 p-4 rounded-lg mb-4 flex-shrink-0">
