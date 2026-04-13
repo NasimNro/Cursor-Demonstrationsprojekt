@@ -25,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark min-h-full" suppressHydrationWarning>
       <body
-        className={`${inter.className} text-gray-100 antialiased min-h-full min-h-[100svh]`}
+        className={`${inter.className} text-gray-100 antialiased min-h-[100svh]`}
         suppressHydrationWarning
       >
         {children}

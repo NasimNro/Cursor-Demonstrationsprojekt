@@ -9,7 +9,6 @@ import {
   Title,
   Tooltip,
   Legend,
-  TimeScale,
   ChartData,
   ChartOptions,
   TooltipItem,
@@ -17,6 +16,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { format } from "date-fns";
+import type { WeightEntry } from "@/types";
 
 // Register ChartJS components
 ChartJS.register(
@@ -27,16 +27,8 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  TimeScale,
   Filler
 );
-
-interface WeightEntry {
-  _id: string;
-  weight: number;
-  date: string;
-  notes?: string;
-}
 
 interface WeightChartProps {
   weights: WeightEntry[];
@@ -77,7 +69,7 @@ export default function WeightChart({ weights }: WeightChartProps) {
           data: weightData,
           borderColor: "rgba(164, 184, 219, 1)",
           borderWidth: 3,
-          backgroundColor: (context: any) => {
+          backgroundColor: (context: { chart: { ctx: CanvasRenderingContext2D; height: number } }) => {
             const ctx = context.chart.ctx;
             const gradient = ctx.createLinearGradient(0, 0, 0, context.chart.height);
             gradient.addColorStop(0, "rgba(164, 184, 219, 0.4)");
@@ -96,28 +88,6 @@ export default function WeightChart({ weights }: WeightChartProps) {
     });
   }, [weights, isClient]);
 
-  // Calculate trend line using linear regression
-  const calculateTrendLine = (weights: WeightEntry[]) => {
-    if (weights.length < 2) return [];
-
-    const n = weights.length;
-    let sumX = 0;
-    let sumY = 0;
-    let sumXY = 0;
-    let sumXX = 0;
-
-    weights.forEach((weight, index) => {
-      sumX += index;
-      sumY += weight.weight;
-      sumXY += index * weight.weight;
-      sumXX += index * index;
-    });
-
-    const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
-    const intercept = (sumY - slope * sumX) / n;
-
-    return weights.map((_, index) => slope * index + intercept);
-  };
 
   const options: ChartOptions<"line"> = {
     responsive: true,
@@ -218,16 +188,15 @@ export default function WeightChart({ weights }: WeightChartProps) {
   };
 
   if (!isClient) {
-    // Return empty div during server-side rendering
-    return <div className="bg-gray-800 p-6 rounded-lg shadow-md h-full"></div>;
+    return <div className="bg-[#161618] rounded-2xl h-full" />;
   }
 
   if (weights.length === 0) {
     return (
-      <div className="h-full flex flex-col justify-center items-center bg-gray-800 rounded-lg p-4 text-center">
+      <div className="h-full flex flex-col justify-center items-center bg-[#161618] rounded-2xl p-4 text-center border border-white/5">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-12 w-12 text-gray-600 mb-4"
+          className="h-10 w-10 text-gray-600 mb-3"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -239,9 +208,9 @@ export default function WeightChart({ weights }: WeightChartProps) {
             d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
           />
         </svg>
-        <h3 className="text-lg font-medium text-gray-300">No Data Available</h3>
-        <p className="text-sm text-gray-400 mt-2">
-          Add your first weight entry to start tracking your progress!
+        <h3 className="text-base font-medium text-gray-400">Keine Daten vorhanden</h3>
+        <p className="text-xs text-gray-500 mt-1">
+          Füge deinen ersten Eintrag hinzu!
         </p>
       </div>
     );
