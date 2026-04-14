@@ -150,6 +150,12 @@ export default function Home() {
     return sorted[sorted.length - 1].weight.toFixed(1).replace(".", ",");
   };
 
+  const getLatestRawWeight = () => {
+    if (weights.length === 0) return 80.0;
+    const sorted = [...weights].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    return sorted[sorted.length - 1].weight;
+  };
+
   return (
     <main className="min-h-[100svh] text-gray-100">
       <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 max-w-2xl">
@@ -256,6 +262,7 @@ export default function Home() {
         <WeightForm
           onSubmit={handleFormSubmit}
           initialData={editingWeight || undefined}
+          defaultWeight={!editingWeight ? getLatestRawWeight() : undefined}
           onCancel={handleCloseModal}
           onDelete={editingWeight ? async () => {
             await deleteWeight(editingWeight._id);

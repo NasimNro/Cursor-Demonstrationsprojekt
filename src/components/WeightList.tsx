@@ -24,7 +24,7 @@ export default function WeightList({
 
     return {
       ...weight,
-      formattedDate: format(new Date(weight.date), "MMM d, yyyy"),
+      formattedDate: format(new Date(weight.date), "dd.MM.yyyy"),
       diffFromPrev,
     };
   });
