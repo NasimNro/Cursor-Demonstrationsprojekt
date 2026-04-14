@@ -246,7 +246,6 @@ export default function Home() {
               <WeightList
                 weights={weights}
                 onEdit={(w) => { setEditingWeight(w); setIsModalOpen(true); }}
-                onDelete={deleteWeight}
               />
             </section>
           </>

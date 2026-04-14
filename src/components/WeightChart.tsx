@@ -123,7 +123,7 @@ export default function WeightChart({ weights }: WeightChartProps) {
           padding: 8,
           stepSize: 1,
           maxTicksLimit: 6,
-          callback: function(value: any) {
+          callback: function(value: number | string) {
             return Number(value).toFixed(0);
           },
         },

@@ -5,13 +5,11 @@ import type { WeightEntry } from "@/types";
 interface WeightListProps {
   weights: WeightEntry[];
   onEdit: (weight: WeightEntry) => void;
-  onDelete: (id: string) => void;
 }
 
 export default function WeightList({
   weights,
   onEdit,
-  onDelete,
 }: WeightListProps) {
   // Sort weights by date (newest first) and calculate diffs
   const sortedWeights = [...weights].sort(

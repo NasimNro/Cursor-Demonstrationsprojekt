@@ -41,7 +41,7 @@ export default function WeightForm({
         : format(new Date(), "yyyy-MM-dd")
     );
     setNotes(initialData?.notes || "");
-  }, [initialData, defaultWeight]);
+  }, [initialData, defaultWeight, weight]);
 
   const validateForm = () => {
     const newErrors: { weight?: string; date?: string } = {};

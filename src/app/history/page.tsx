@@ -162,7 +162,6 @@ export default function HistoryPage() {
                 <WeightList
                   weights={weights}
                   onEdit={handleEdit}
-                  onDelete={deleteWeight}
                 />
               </div>
             )}
