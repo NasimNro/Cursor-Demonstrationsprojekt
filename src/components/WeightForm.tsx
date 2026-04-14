@@ -29,19 +29,19 @@ export default function WeightForm({
   const [errors, setErrors] = useState<{ weight?: string; date?: string }>({});
 
   useEffect(() => {
-    if (initialData?.weight && initialData.weight !== weight) {
+    if (initialData?.weight) {
       setWeight(initialData.weight);
-    } else if (defaultWeight && !initialData && defaultWeight !== weight) {
-      setWeight(defaultWeight);
     }
     
+    // Just sync `date`
     setDate(
       initialData?.date
         ? format(new Date(initialData.date), "yyyy-MM-dd")
         : format(new Date(), "yyyy-MM-dd")
     );
     setNotes(initialData?.notes || "");
-  }, [initialData, defaultWeight, weight]);
+  // Using specific properties instead of full object prevents infinite loops and satisfies eslint
+  }, [initialData?.weight, initialData?.date, initialData?.notes, defaultWeight]);
 
   const validateForm = () => {
     const newErrors: { weight?: string; date?: string } = {};
