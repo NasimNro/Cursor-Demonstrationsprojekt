@@ -2,6 +2,11 @@
 import { format } from "date-fns";
 import type { WeightEntry } from "@/types";
 
+function formatWeight(value: number): string {
+  const s = value.toFixed(2);
+  return (s.endsWith("0") ? value.toFixed(1) : s).replace(".", ",");
+}
+
 interface WeightListProps {
   weights: WeightEntry[];
   onEdit: (weight: WeightEntry) => void;
@@ -39,7 +44,7 @@ export default function WeightList({
             <div className="w-1 h-8 rounded-full bg-blue-300 mr-4 opacity-80" />
             <div className="flex flex-col">
               <span className="text-white font-semibold text-lg leading-tight mb-0.5">
-                {entry.weight.toFixed(1).replace('.', ',')} kg
+                {formatWeight(entry.weight)} kg
               </span>
               <span className="text-gray-400 text-xs">
                 {entry.formattedDate}
@@ -53,7 +58,7 @@ export default function WeightList({
                 entry.diffFromPrev > 0 ? "text-green-400" :
                 "text-gray-500"
               }`}>
-                {entry.diffFromPrev > 0 ? "+" : ""}{entry.diffFromPrev.toFixed(1).replace('.', ',')} kg
+                {entry.diffFromPrev > 0 ? "+" : ""}{formatWeight(entry.diffFromPrev)} kg
               </span>
             )}
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">

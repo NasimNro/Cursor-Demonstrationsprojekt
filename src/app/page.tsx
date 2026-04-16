@@ -147,7 +147,9 @@ export default function Home() {
   const getLatestWeight = () => {
     if (weights.length === 0) return "0.0";
     const sorted = [...weights].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-    return sorted[sorted.length - 1].weight.toFixed(1).replace(".", ",");
+    const w = sorted[sorted.length - 1].weight;
+    const s = w.toFixed(2);
+    return (s.endsWith("0") ? w.toFixed(1) : s).replace(".", ",");
   };
 
   const getLatestRawWeight = () => {
