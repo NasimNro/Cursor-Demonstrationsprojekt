@@ -14,7 +14,7 @@ import type { WeightEntry } from "@/types";
 export default function Home() {
   const [weights, setWeights] = useState<WeightEntry[]>([]);
   const [filteredWeights, setFilteredWeights] = useState<WeightEntry[]>([]);
-  const [timeRange, setTimeRange] = useState<"week" | "month" | "year" | "all">("month");
+  const [timeRange, setTimeRange] = useState<"week" | "month" | "6months" | "year" | "all">("month");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [editingWeight, setEditingWeight] = useState<WeightEntry | null>(null);
@@ -106,6 +106,9 @@ export default function Home() {
         break;
       case "month":
         cutoffDate = subMonths(now, 1);
+        break;
+      case "6months":
+        cutoffDate = subMonths(now, 6);
         break;
       case "year":
         cutoffDate = subYears(now, 1);

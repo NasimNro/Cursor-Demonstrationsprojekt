@@ -1,7 +1,7 @@
 "use client";
 interface TimeRangeFilterProps {
- activeRange: "week" | "month" | "year" | "all";
- onRangeChange: (range: "week" | "month" | "year" | "all") => void;
+ activeRange: "week" | "month" | "6months" | "year" | "all";
+ onRangeChange: (range: "week" | "month" | "6months" | "year" | "all") => void;
 }
 
 export default function TimeRangeFilter({
@@ -29,6 +29,16 @@ export default function TimeRangeFilter({
  onClick={() => onRangeChange("month")}
  >
  MONAT
+ </button>
+ <button
+ className={`px-3 py-1.5 rounded-full ${
+ activeRange === "6months"
+ ? "bg-[#1f1f22] text-white"
+ : "hover:text-gray-200"
+ }`}
+ onClick={() => onRangeChange("6months")}
+ >
+ 6M
  </button>
  <button
  className={`px-3 py-1.5 rounded-full ${
