@@ -2,19 +2,41 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { subMonths, subWeeks, subYears } from "date-fns";
+import { format, subDays } from "date-fns";
 
 import WeightForm from "@/components/WeightForm";
 import WeightChart from "@/components/WeightChart";
 import TimeRangeFilter from "@/components/TimeRangeFilter";
+import PeriodNavigator from "@/components/PeriodNavigator";
 import Modal from "@/components/Modal";
 import WeightList from "@/components/WeightList";
 import type { WeightEntry } from "@/types";
 
+type TimeRange = "week" | "month" | "6months" | "year" | "all";
+
+function getPeriodDays(range: Exclude<TimeRange, "all">): number {
+  return range === "week" ? 7 : range === "month" ? 30 : range === "6months" ? 183 : 365;
+}
+
+function getPeriodBounds(range: Exclude<TimeRange, "all">, offset: number) {
+  const days = getPeriodDays(range);
+  const end = subDays(new Date(), days * offset);
+  const start = subDays(end, days);
+  return { start, end };
+}
+
+function getPeriodLabel(range: Exclude<TimeRange, "all">, offset: number): string {
+  const { start, end } = getPeriodBounds(range, offset);
+  const sameYear = start.getFullYear() === end.getFullYear();
+  const startStr = sameYear ? format(start, "dd.MM.") : format(start, "dd.MM.yy");
+  return `${startStr} – ${format(end, "dd.MM.yy")}`;
+}
+
 export default function Home() {
   const [weights, setWeights] = useState<WeightEntry[]>([]);
   const [filteredWeights, setFilteredWeights] = useState<WeightEntry[]>([]);
-  const [timeRange, setTimeRange] = useState<"week" | "month" | "6months" | "year" | "all">("month");
+  const [timeRange, setTimeRange] = useState<TimeRange>("month");
+  const [periodOffset, setPeriodOffset] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [editingWeight, setEditingWeight] = useState<WeightEntry | null>(null);
@@ -92,34 +114,22 @@ export default function Home() {
     }
   };
 
-  // Filter weights based on time range
+  // Filter weights based on time range and period offset
   useEffect(() => {
     if (weights.length === 0) {
       setFilteredWeights([]);
       return;
     }
-    const now = new Date();
-    let cutoffDate = now;
-    switch (timeRange) {
-      case "week":
-        cutoffDate = subWeeks(now, 1);
-        break;
-      case "month":
-        cutoffDate = subMonths(now, 1);
-        break;
-      case "6months":
-        cutoffDate = subMonths(now, 6);
-        break;
-      case "year":
-        cutoffDate = subYears(now, 1);
-        break;
-      case "all":
-        setFilteredWeights(weights);
-        return;
+    if (timeRange === "all") {
+      setFilteredWeights(weights);
+      return;
     }
-    const filtered = weights.filter((w) => new Date(w.date) >= cutoffDate);
-    setFilteredWeights(filtered);
-  }, [weights, timeRange]);
+    const { start, end } = getPeriodBounds(timeRange, periodOffset);
+    setFilteredWeights(weights.filter((w) => {
+      const d = new Date(w.date);
+      return d >= start && d <= end;
+    }));
+  }, [weights, timeRange, periodOffset]);
 
   // Fetch weights on component mount
   useEffect(() => {
@@ -147,6 +157,11 @@ export default function Home() {
     setIsModalOpen(true);
   };
 
+  const handleTimeRangeChange = (range: TimeRange) => {
+    setTimeRange(range);
+    setPeriodOffset(0);
+  };
+
   const getLatestWeight = () => {
     if (weights.length === 0) return "0.0";
     const sorted = [...weights].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
@@ -166,6 +181,11 @@ export default function Home() {
     const sorted = [...filteredWeights].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     return sorted[sorted.length - 1].weight - sorted[0].weight;
   };
+
+  const periodBounds = timeRange !== "all" ? getPeriodBounds(timeRange, periodOffset) : null;
+  const canGoBack = periodBounds != null && weights.some((w) => new Date(w.date) < periodBounds.start);
+  const canGoForward = periodOffset > 0;
+  const periodLabel = timeRange !== "all" ? getPeriodLabel(timeRange, periodOffset) : "";
 
   return (
     <main className="min-h-[100svh] text-gray-100">
@@ -240,11 +260,20 @@ export default function Home() {
             {/* Chart Section */}
             <section className="mb-6 bg-[#161618] rounded-[24px] p-4 shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-white/5 w-full">
               <div className="flex justify-center items-center mb-2 px-2 relative z-20">
-                <TimeRangeFilter activeRange={timeRange} onRangeChange={setTimeRange} weightDelta={getWeightDelta()} />
+                <TimeRangeFilter activeRange={timeRange} onRangeChange={handleTimeRangeChange} weightDelta={getWeightDelta()} />
               </div>
               <div className="w-full" style={{ height: "220px" }}>
                 <WeightChart weights={filteredWeights} />
               </div>
+              {timeRange !== "all" && (
+                <PeriodNavigator
+                  label={periodLabel}
+                  canGoBack={canGoBack}
+                  canGoForward={canGoForward}
+                  onBack={() => setPeriodOffset((o) => o + 1)}
+                  onForward={() => setPeriodOffset((o) => o - 1)}
+                />
+              )}
             </section>
             {/* History Preview List */}
             <section className="pb-8">
