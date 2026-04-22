@@ -28,12 +28,12 @@ export default function TimeRangeFilter({
     weightDelta == null
       ? ""
       : weightDelta > 0
-      ? "text-red-400"
-      : "text-emerald-400";
+      ? "text-emerald-400"
+      : "text-red-400";
 
   return (
-    <div className="relative z-20 flex items-center gap-3 w-full">
-      <div className="flex bg-transparent rounded-full p-1 text-[11px] sm:text-[12px] font-semibold text-gray-400 gap-1">
+    <div className="relative z-20 flex items-center justify-between w-full">
+      <div className="flex bg-transparent rounded-full p-1 text-[11px] sm:text-[12px] font-semibold text-gray-400 gap-1 flex-shrink-0">
         {buttons.map(({ range, label }) => (
           <button
             key={range}
@@ -49,7 +49,7 @@ export default function TimeRangeFilter({
         ))}
       </div>
       {deltaDisplay && (
-        <span className={`text-[12px] sm:text-[13px] font-bold ${deltaColor} whitespace-nowrap`}>
+        <span className={`text-[12px] sm:text-[13px] font-bold ${deltaColor} whitespace-nowrap flex-shrink-0`}>
           {deltaDisplay}
         </span>
       )}
