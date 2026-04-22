@@ -161,6 +161,12 @@ export default function Home() {
     return sorted[sorted.length - 1].weight;
   };
 
+  const getWeightDelta = (): number | null => {
+    if (filteredWeights.length < 2) return null;
+    const sorted = [...filteredWeights].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    return sorted[sorted.length - 1].weight - sorted[0].weight;
+  };
+
   return (
     <main className="min-h-[100svh] text-gray-100">
       <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 max-w-2xl">
@@ -234,7 +240,7 @@ export default function Home() {
             {/* Chart Section */}
             <section className="mb-6 bg-[#161618] rounded-[24px] p-4 shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-white/5 w-full">
               <div className="flex justify-center items-center mb-2 px-2 relative z-20">
-                <TimeRangeFilter activeRange={timeRange} onRangeChange={setTimeRange} />
+                <TimeRangeFilter activeRange={timeRange} onRangeChange={setTimeRange} weightDelta={getWeightDelta()} />
               </div>
               <div className="w-full" style={{ height: "220px" }}>
                 <WeightChart weights={filteredWeights} />
