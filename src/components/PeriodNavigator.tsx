@@ -8,6 +8,18 @@ interface PeriodNavigatorProps {
   onForward: () => void;
 }
 
+const ChevronLeft = () => (
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <path d="M9 11L5 7L9 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const ChevronRight = () => (
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <path d="M5 11L9 7L5 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
 export default function PeriodNavigator({
   label,
   canGoBack,
@@ -21,15 +33,13 @@ export default function PeriodNavigator({
         onClick={onBack}
         disabled={!canGoBack}
         aria-label="Previous period"
-        className={`flex items-center justify-center w-7 h-7 rounded-full transition-colors ${
+        className={`flex items-center justify-center w-8 h-8 rounded-full transition-colors ${
           canGoBack
-            ? "text-gray-300 hover:text-white hover:bg-white/10 active:bg-white/15"
-            : "text-gray-700 cursor-default"
+            ? "bg-white/[0.08] text-gray-300 hover:bg-white/[0.14] hover:text-white active:bg-white/20"
+            : "bg-white/[0.03] text-gray-700 cursor-default"
         }`}
       >
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M9 11L5 7L9 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <ChevronLeft />
       </button>
 
       <span className="text-[11px] sm:text-[12px] text-gray-400 font-medium tabular-nums">
@@ -40,15 +50,13 @@ export default function PeriodNavigator({
         onClick={onForward}
         disabled={!canGoForward}
         aria-label="Next period"
-        className={`flex items-center justify-center w-7 h-7 rounded-full transition-colors ${
+        className={`flex items-center justify-center w-8 h-8 rounded-full transition-colors ${
           canGoForward
-            ? "text-gray-300 hover:text-white hover:bg-white/10 active:bg-white/15"
-            : "text-gray-700 cursor-default"
+            ? "bg-white/[0.08] text-gray-300 hover:bg-white/[0.14] hover:text-white active:bg-white/20"
+            : "bg-white/[0.03] text-gray-700 cursor-default"
         }`}
       >
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M5 11L9 7L5 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <ChevronRight />
       </button>
     </div>
   );

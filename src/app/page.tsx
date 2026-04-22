@@ -187,6 +187,31 @@ export default function Home() {
   const canGoForward = periodOffset > 0;
   const periodLabel = timeRange !== "all" ? getPeriodLabel(timeRange, periodOffset) : "";
 
+  const handleGoBack = () => {
+    if (timeRange === "all" || !periodBounds) return;
+    const days = getPeriodDays(timeRange);
+    // Find the most recent entry before the current window and jump directly to its period
+    const latestBefore = weights
+      .filter((w) => new Date(w.date) < periodBounds.start)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
+    if (!latestBefore) return;
+    const diffMs = new Date().getTime() - new Date(latestBefore.date).getTime();
+    setPeriodOffset(Math.floor(diffMs / (days * 86400000)));
+  };
+
+  const handleGoForward = () => {
+    if (timeRange === "all" || !periodBounds || periodOffset === 0) return;
+    const days = getPeriodDays(timeRange);
+    // Find the earliest entry after the current window and jump directly to its period
+    const earliestAfter = weights
+      .filter((w) => new Date(w.date) > periodBounds.end)
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())[0];
+    if (!earliestAfter) { setPeriodOffset(0); return; }
+    const diffMs = new Date().getTime() - new Date(earliestAfter.date).getTime();
+    const newOffset = Math.floor(diffMs / (days * 86400000));
+    setPeriodOffset(newOffset > 0 ? newOffset : 0);
+  };
+
   return (
     <main className="min-h-[100svh] text-gray-100">
       <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 max-w-2xl">
@@ -270,8 +295,8 @@ export default function Home() {
                   label={periodLabel}
                   canGoBack={canGoBack}
                   canGoForward={canGoForward}
-                  onBack={() => setPeriodOffset((o) => o + 1)}
-                  onForward={() => setPeriodOffset((o) => o - 1)}
+                  onBack={handleGoBack}
+                  onForward={handleGoForward}
                 />
               )}
             </section>
