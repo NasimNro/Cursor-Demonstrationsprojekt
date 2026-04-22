@@ -32,7 +32,8 @@ export default function TimeRangeFilter({
       : "text-red-400";
 
   return (
-    <div className="relative z-20 flex items-center justify-between w-full">
+    <div className="relative z-20 flex items-center w-full">
+      <div className="flex-1" />
       <div className="flex bg-transparent rounded-full p-1 text-[11px] sm:text-[12px] font-semibold text-gray-400 gap-1 flex-shrink-0">
         {buttons.map(({ range, label }) => (
           <button
@@ -48,11 +49,13 @@ export default function TimeRangeFilter({
           </button>
         ))}
       </div>
-      {deltaDisplay && (
-        <span className={`text-[11px] sm:text-[12px] font-bold ${deltaColor} whitespace-nowrap flex-shrink-0 bg-[#1f1f22] rounded-full px-3 py-1.5 mr-1`}>
-          {deltaDisplay}
-        </span>
-      )}
+      <div className="flex-1 flex justify-end">
+        {deltaDisplay && (
+          <span className={`text-[11px] sm:text-[12px] font-bold ${deltaColor} whitespace-nowrap bg-[#1f1f22] rounded-full px-3 py-1.5`}>
+            {deltaDisplay}
+          </span>
+        )}
+      </div>
     </div>
   );
 }
