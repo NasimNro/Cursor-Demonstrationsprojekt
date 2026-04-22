@@ -49,7 +49,7 @@ export default function TimeRangeFilter({
         ))}
       </div>
       {deltaDisplay && (
-        <span className={`text-[12px] sm:text-[13px] font-bold ${deltaColor} whitespace-nowrap flex-shrink-0`}>
+        <span className={`text-[11px] sm:text-[12px] font-bold ${deltaColor} whitespace-nowrap flex-shrink-0 bg-[#1f1f22] rounded-full px-3 py-1.5 mr-1`}>
           {deltaDisplay}
         </span>
       )}
